@@ -16,6 +16,9 @@ class TestDialer(GaiaTestCase):
 
     _test_phone_number = "1234567890"
 
+    _visable_keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
+    _imei_number = '*#06#'
+
     def setUp(self):
 
         GaiaTestCase.setUp(self)
@@ -61,6 +64,11 @@ class TestDialer(GaiaTestCase):
         # hang up
         #self.marionette.find_element(*self._hangup_bar_locator).click()
 
+    def test_dialer_get_imei_number(self):
+        self._dial_number(self._imei_number)
+        self.marionette.find_element(*self._call_bar_locator).click()
+        # TODO finish up this test to assert that something is being done.
+
     def tearDown(self):
 
         # close the app
@@ -76,7 +84,7 @@ class TestDialer(GaiaTestCase):
 
         # TODO Doesn't work for + yet, requires click/hold gestures
         for i in phone_number:
-            # ignore non-numeric part of phone number until we have gestures
-            if int(i) in range(0, 10):
+            # ignore non-visable keys in phone number until we have gestures
+            if i in self._visable_keys:
                 self.marionette.find_element('css selector', 'div.keypad-key div[data-value="%s"]' % i).click()
                 time.sleep(0.25)
